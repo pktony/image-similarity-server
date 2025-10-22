@@ -4,9 +4,9 @@ FastAPI Image Similarity Server
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from core.config import settings
-from core.dependencies import model_manager
-from api.v1.router import api_router
+from app.core.config import settings
+from app.core.dependencies import model_manager
+from app.api.v1.router import api_router
 
 
 @asynccontextmanager
@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
     # Startup: Load models
     print("Starting up...")
     model_manager.initialize()
-    print(" Application startup complete")
+    print("Application startup complete")
 
     yield
 

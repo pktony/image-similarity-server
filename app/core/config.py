@@ -2,6 +2,7 @@
 Application Configuration
 """
 from pathlib import Path
+from typing import Optional
 from pydantic_settings import BaseSettings
 
 
@@ -19,7 +20,7 @@ class Settings(BaseSettings):
 
     # Model settings
     model_name: str = "openai/clip-vit-base-patch32"
-    device: str = None  # None for auto-detection (cuda/cpu)
+    device: Optional[str] = None  # None for auto-detection (cuda/cpu)
 
     # Similarity thresholds
     tau1: float = 0.30  # Minimum top similarity score threshold
