@@ -31,7 +31,8 @@ class Settings(BaseSettings):
     tau2: float = 0.04  # Minimum margin threshold
 
     class Config:
-        env_file = ".env"
+        # Use absolute path to .env file (project root)
+        env_file = Path(__file__).resolve().parent.parent.parent / ".env"
         case_sensitive = False
 
 
