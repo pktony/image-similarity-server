@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: image-similarity-api
+    # 포트는 .env 파일에서 읽어옴 (Git에 노출 안됨)
+    ports:
+      - "${PORT:-8000}:8000"
+    # 환경 변수는 .env 파일에서 자동 로드
+    env_file:
+      - .env
+    volumes:
+      # AI models directory
+      - ./app/ai_models:/app/app/ai_models:ro
+      # Hugging Face cache
+      - huggingface_cache:/root/.cache/huggingface
+    restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  huggingface_cache:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

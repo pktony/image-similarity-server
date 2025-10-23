@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Docker
+.dockerignore
+
+# PM2
+ecosystem.config.js
+.pm2/
+
+# Tests
+test_images/
+tests/
+
+# Logs
+*.log
+
+# Environment (보안)
+.env
+.env.local
+.env.production
+
+# Documentation
+*.md

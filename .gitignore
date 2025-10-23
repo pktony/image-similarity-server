@@ -4,3 +4,14 @@ myapi.db
 __pycache__
 migrations
 alembic.ini
+
+# Environment variables (민감한 정보)
+.env
+.env.local
+.env.production
+
+# Docker volumes
+.data/
+
+# PM2
+.pm2/
