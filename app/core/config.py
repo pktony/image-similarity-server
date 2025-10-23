@@ -3,7 +3,7 @@ Application Configuration
 """
 from pathlib import Path
 from typing import Optional
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -30,10 +30,18 @@ class Settings(BaseSettings):
     tau1: float = 0.30  # Minimum top similarity score threshold
     tau2: float = 0.04  # Minimum margin threshold
 
-    class Config:
-        # Use absolute path to .env file (project root)
-        env_file = Path(__file__).resolve().parent.parent.parent / ".env"
-        case_sensitive = False
+    model_config = SettingsConfigDict(
+        env_file=str(Path(__file__).resolve().parent.parent.parent / ".env"),
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore"
+    )
 
 
 settings = Settings()
+
+# Debug: Print loaded configuration
+print(f"[CONFIG] .env file path: {Path(__file__).resolve().parent.parent.parent / '.env'}")
+print(f"[CONFIG] .env exists: {(Path(__file__).resolve().parent.parent.parent / '.env').exists()}")
+print(f"[CONFIG] Loaded PORT: {settings.port}")
+print(f"[CONFIG] Loaded HOST: {settings.host}")
