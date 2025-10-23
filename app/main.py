@@ -69,4 +69,5 @@ async def health():
 
 if __name__ == "__main__":
     import uvicorn
+    print(f"[MAIN] Starting server with host={settings.host}, port={settings.port}")
     uvicorn.run("app.main:app", host=settings.host, port=settings.port, reload=True)
