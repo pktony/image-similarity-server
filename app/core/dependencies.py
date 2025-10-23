@@ -4,6 +4,7 @@ Dependency Injection
 from typing import Optional
 from app.models.embedding_extractor import ImageEmbeddingExtractor
 from app.models.similarity_calculator import SimilarityCalculator
+from app.utils.name_mapper import PokemonNameMapper
 from app.core.config import settings
 
 
@@ -13,6 +14,7 @@ class ModelManager:
     _instance: Optional["ModelManager"] = None
     _embedding_extractor: Optional[ImageEmbeddingExtractor] = None
     _similarity_calculator: Optional[SimilarityCalculator] = None
+    _name_mapper: Optional[PokemonNameMapper] = None
 
     def __new__(cls):
         if cls._instance is None:
@@ -28,11 +30,16 @@ class ModelManager:
                 device=settings.device
             )
 
+        if self._name_mapper is None:
+            print(f"Loading Pokemon name mapper from: {settings.pokemon_names_path}")
+            self._name_mapper = PokemonNameMapper(str(settings.pokemon_names_path))
+
         if self._similarity_calculator is None:
             print(f"Loading similarity calculator from: {settings.prototypes_path}")
             self._similarity_calculator = SimilarityCalculator(
                 tau1=settings.tau1,
-                tau2=settings.tau2
+                tau2=settings.tau2,
+                name_mapper=self._name_mapper
             )
             self._similarity_calculator.load_prototypes_from_npz(
                 str(settings.prototypes_path)

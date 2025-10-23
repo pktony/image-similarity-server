@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     base_dir: Path = Path(__file__).resolve().parent.parent
     ai_models_dir: Path = base_dir / "ai_models" / "pokemon"
     prototypes_path: Path = ai_models_dir / "prototypes.npz"
+    pokemon_names_path: Path = ai_models_dir / "pokemon.names.json"
 
     # Model settings
     model_name: str = "openai/clip-vit-base-patch32"

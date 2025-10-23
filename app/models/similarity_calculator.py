@@ -6,21 +6,24 @@ for Pokémon matching with unknown detection via threshold-based logic.
 """
 import numpy as np
 from typing import List, Dict, Tuple, Optional
+from app.utils.name_mapper import PokemonNameMapper
 
 
 class SimilarityCalculator:
-    def __init__(self, tau1: float = 0.30, tau2: float = 0.04):
+    def __init__(self, tau1: float = 0.30, tau2: float = 0.04, name_mapper: Optional[PokemonNameMapper] = None):
         """
         Initialize Similarity Calculator
 
         Args:
             tau1: Minimum top similarity score threshold (default: 0.30)
             tau2: Minimum margin threshold between top two scores (default: 0.04)
+            name_mapper: Optional Pokemon name mapper for Korean-English translation
         """
         self.tau1 = tau1
         self.tau2 = tau2
         self.prototypes: Optional[Dict[str, np.ndarray]] = None
         self.class_names: Optional[List[str]] = None
+        self.name_mapper = name_mapper
 
     def load_prototypes_from_dict(self, prototypes_dict: Dict[str, np.ndarray]):
         """
@@ -162,7 +165,9 @@ class SimilarityCalculator:
             Dictionary with match results:
             {
                 "top_k": [(name, score), ...],
+                "top_k_english": [(english_name, score), ...],  # if name_mapper available
                 "verdict": str,  # class name or "unknown"
+                "verdict_english": str,  # english name or "unknown" if name_mapper available
                 "s1": float,     # top score
                 "margin": float, # s1 - s2
                 "is_unknown": bool
@@ -177,13 +182,28 @@ class SimilarityCalculator:
         # Determine verdict
         verdict = "unknown" if is_unknown else top_k[0][0]
 
-        return {
+        # Build result dictionary
+        result = {
             "top_k": top_k,
             "verdict": verdict,
             "s1": s1,
             "margin": margin,
             "is_unknown": is_unknown
         }
+
+        # Add English translations if name mapper is available
+        if self.name_mapper is not None:
+            # Translate top_k results
+            top_k_english = [
+                (self.name_mapper.to_english(name), score)
+                for name, score in top_k
+            ]
+            result["top_k_english"] = top_k_english
+
+            # Translate verdict
+            result["verdict_english"] = self.name_mapper.translate_verdict(verdict)
+
+        return result
 
     def get_thresholds(self) -> Dict[str, float]:
         """

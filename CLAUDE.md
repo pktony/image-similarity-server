@@ -52,6 +52,7 @@ image-similarity-server/
 │       └── pokemon/               # 포켓몬 도메인 데이터
 │           ├── prototypes.npz     # 클래스별 프로토타입 임베딩
 │           ├── prototypes.meta.json # 메타데이터 (클래스명, 통계 등)
+│           ├── pokemon.names.json # 포켓몬 (한글 - 영어 이름 json)
 │           └── *.npz              # 개별 포켓몬 임베딩 (optional)
 ├── test_images/                   # 테스트용 이미지 샘플
 ├── requirements.txt               # Python 의존성
