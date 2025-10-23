@@ -4,6 +4,7 @@ Pokemon Name Mapper
 Utility for translating Korean Pokemon names to English.
 """
 import json
+import unicodedata
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -26,11 +27,29 @@ class PokemonNameMapper:
         self.name_mapping: Dict[str, str] = {}
         self._load_mappings(json_path)
 
+    def _normalize_key(self, text: str) -> str:
+        """
+        Normalize Korean text to NFC form for consistent key matching
+
+        Args:
+            text: Input text (may be in NFD or NFC form)
+
+        Returns:
+            Normalized text in NFC form (composed characters)
+        """
+        return unicodedata.normalize('NFC', text)
+
     def _load_mappings(self, json_path: Path):
         """Load name mappings from JSON file"""
         try:
             with open(json_path, "r", encoding="utf-8") as f:
-                self.name_mapping = json.load(f)
+                raw_mapping = json.load(f)
+
+            # Normalize all keys to NFC form
+            self.name_mapping = {
+                self._normalize_key(key): value
+                for key, value in raw_mapping.items()
+            }
             print(f"✓ Loaded {len(self.name_mapping)} Pokemon name mappings")
         except FileNotFoundError:
             print(f"⚠ Warning: Pokemon names file not found at {json_path}")
@@ -44,12 +63,14 @@ class PokemonNameMapper:
         Convert Korean name to English
 
         Args:
-            korean_name: Korean Pokemon name
+            korean_name: Korean Pokemon name (will be normalized)
 
         Returns:
             English name if found, otherwise original Korean name
         """
-        return self.name_mapping.get(korean_name, korean_name)
+        # Normalize input key to match stored keys
+        normalized_name = self._normalize_key(korean_name)
+        return self.name_mapping.get(normalized_name, korean_name)
 
     def translate_verdict(self, verdict: str) -> str:
         """
@@ -70,9 +91,10 @@ class PokemonNameMapper:
         Check if mapping exists for given name
 
         Args:
-            korean_name: Korean name to check
+            korean_name: Korean name to check (will be normalized)
 
         Returns:
             True if mapping exists
         """
-        return korean_name in self.name_mapping
+        normalized_name = self._normalize_key(korean_name)
+        return normalized_name in self.name_mapping
