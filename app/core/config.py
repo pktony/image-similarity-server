@@ -13,6 +13,10 @@ class Settings(BaseSettings):
     app_name: str = "Image Similarity API"
     app_version: str = "1.0.0"
 
+    # Server settings
+    host: str = "0.0.0.0"
+    port: int = 8000
+
     # Paths
     base_dir: Path = Path(__file__).resolve().parent.parent
     ai_models_dir: Path = base_dir / "ai_models" / "pokemon"
