@@ -12,6 +12,8 @@ services:
     # 환경 변수는 .env 파일에서 자동 로드
     env_file:
       - .env
+    environment:
+      - ROOT_PATH=/image-similiarity
     volumes:
       # AI models directory
       - ./app/ai_models:/app/app/ai_models:ro
