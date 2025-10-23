@@ -64,6 +64,9 @@ async def find_similar_by_url(
         # Find similar
         result = similarity_service.find_similar(embedding, top_k=top_k)
 
+        print('URL:', request.url)
+        print('Result:', result)
+
         return SimilarityResponse(**result)
 
     except Exception as e:
