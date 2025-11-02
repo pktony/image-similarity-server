@@ -14,7 +14,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.core.config import settings
 from app.core.dependencies import model_manager
-from app.api.v1.router import api_router
+from app.api.v1.router import api_router as api_router_v1
+from app.api.v2.router import api_router as api_router_v2
 
 
 @asynccontextmanager
@@ -47,8 +48,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API router
-app.include_router(api_router, prefix="/api/v1")
+# Include API routers
+app.include_router(api_router_v1, prefix="/api/v1")
+app.include_router(api_router_v2, prefix="/api/v2")
 
 
 @app.get("/")

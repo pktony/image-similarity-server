@@ -31,6 +31,12 @@ class Settings(BaseSettings):
     tau1: float = 0.30  # Minimum top similarity score threshold
     tau2: float = 0.04  # Minimum margin threshold
 
+    # Oracle Object Storage settings
+    oci_config_profile: str = "DEFAULT"
+    oci_namespace: Optional[str] = None
+    oci_bucket_name: str = "image-uploads"
+    oci_region: str = "ap-seoul-1"
+
     model_config = SettingsConfigDict(
         env_file=str(Path(__file__).resolve().parent.parent.parent / ".env"),
         env_file_encoding="utf-8",
