@@ -23,6 +23,7 @@ class OracleStorageService:
 
         # Initialize Object Storage client
         self.client = oci.object_storage.ObjectStorageClient(self.config)
+        print('oracle_storage_service: initialized OCI client')
 
         # Get namespace (if not provided in settings)
         if settings.oci_namespace:
@@ -33,6 +34,9 @@ class OracleStorageService:
 
         self.bucket_name = settings.oci_bucket_name
         self.region = settings.oci_region
+
+        print('oracle_storage_service: bucket_name ' + self.bucket_name)
+        print('oracle_storage_service: region ' + self.region)
 
     def generate_upload_url(self, filename: str) -> Dict[str, str]:
         """
