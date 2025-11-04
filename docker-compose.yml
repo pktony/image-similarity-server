@@ -14,13 +14,14 @@ services:
       - .env
     environment:
       - ROOT_PATH=/image-similiarity
-      - ~/.oci:/root/.oci:ro
       - PYTHONUNBUFFERED=1
     volumes:
       # AI models directory
       - ./app/ai_models:/app/app/ai_models:ro
       # Hugging Face cache
       - huggingface_cache:/root/.cache/huggingface
+      # oci config
+      - ~/.oci:/root/.oci:ro
     restart: unless-stopped
     networks:
       - app-network
