@@ -21,7 +21,7 @@ services:
       # Hugging Face cache
       - huggingface_cache:/root/.cache/huggingface
       # oci config
-      - ~/.oci:/root/.oci:ro
+      - ./.oci:/root/.oci:ro
     restart: unless-stopped
     networks:
       - app-network
