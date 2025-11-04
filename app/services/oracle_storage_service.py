@@ -2,11 +2,13 @@
 Oracle Object Storage Service
 Handles PAR (Pre-authenticated Request) URL generation
 """
+
 import os
 from datetime import datetime, timedelta
 from typing import Dict
 import oci
 from app.core.config import settings
+import base64
 
 
 class OracleStorageService:
@@ -14,16 +16,17 @@ class OracleStorageService:
 
     def __init__(self):
         """Initialize OCI client using config file"""
-        # Load OCI config from ~/.oci/config
-        config_file = os.path.expanduser("~/.oci/config")
-        self.config = oci.config.from_file(
-            file_location=config_file,
-            profile_name=settings.oci_config_profile
-        )
+        self.config = {
+            "user": os.getenv("OCI_USER_OCID"),
+            "fingerprint": os.getenv("OCI_FINGERPRINT"),
+            "tenancy": os.getenv("OCI_TENANCY_OCID"),
+            "region": os.getenv("OCI_REGION"),
+            "key_content": base64.b64decode(os.getenv("OCI_PRIVATE_KEY"))
+        }
 
         # Initialize Object Storage client
         self.client = oci.object_storage.ObjectStorageClient(self.config)
-        print('oracle_storage_service: initialized OCI client')
+        print("oracle_storage_service: initialized OCI client")
 
         # Get namespace (if not provided in settings)
         if settings.oci_namespace:
@@ -35,8 +38,8 @@ class OracleStorageService:
         self.bucket_name = settings.oci_bucket_name
         self.region = settings.oci_region
 
-        print('oracle_storage_service: bucket_name ' + self.bucket_name)
-        print('oracle_storage_service: region ' + self.region)
+        print("oracle_storage_service: bucket_name " + self.bucket_name)
+        print("oracle_storage_service: region " + self.region)
 
     def generate_upload_url(self, filename: str) -> Dict[str, str]:
         """
@@ -67,14 +70,14 @@ class OracleStorageService:
             access_type="ObjectWrite",  # PUT only
             time_expires=expires_at,
             object_name=object_name,
-            bucket_listing_action=None
+            bucket_listing_action=None,
         )
 
         # Generate PAR
         par_response = self.client.create_preauthenticated_request(
             namespace_name=self.namespace,
             bucket_name=self.bucket_name,
-            create_preauthenticated_request_details=par_details
+            create_preauthenticated_request_details=par_details,
         )
 
         # Build full PAR URL
@@ -90,7 +93,7 @@ class OracleStorageService:
             "upload_url": upload_url,
             "download_url": download_url,
             "object_name": object_name,
-            "expires_at": expires_at.isoformat() + "Z"
+            "expires_at": expires_at.isoformat() + "Z",
         }
 
     def delete_object(self, object_name: str) -> None:
@@ -103,5 +106,5 @@ class OracleStorageService:
         self.client.delete_object(
             namespace_name=self.namespace,
             bucket_name=self.bucket_name,
-            object_name=object_name
+            object_name=object_name,
         )
