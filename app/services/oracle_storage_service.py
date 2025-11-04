@@ -83,10 +83,12 @@ class OracleStorageService:
         # Build full PAR URL
         upload_url = f"https://objectstorage.{self.region}.oraclecloud.com{par_response.data.access_uri}"
 
+        from urllib.parse import quote
+        encoded_object_name = quote(object_name, safe='')
         # Build download URL (public access URL without PAR)
         download_url = (
             f"https://objectstorage.{self.region}.oraclecloud.com"
-            f"/n/{self.namespace}/b/{self.bucket_name}/o/{object_name}"
+            f"/n/{self.namespace}/b/{self.bucket_name}/o/{encoded_object_name}"
         )
 
         return {
