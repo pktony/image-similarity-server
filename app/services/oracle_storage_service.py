@@ -59,7 +59,7 @@ class OracleStorageService:
 
         # Generate unique object name (timestamp prefix)
         timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-        object_name = f"{timestamp}_{safe_filename}"
+        object_name = f"pokemon-similarity/{timestamp}_{safe_filename}"
 
         # Set PAR expiration (1 hour from now)
         expires_at = datetime.utcnow() + timedelta(hours=1)
